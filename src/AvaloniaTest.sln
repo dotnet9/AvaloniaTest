@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33103.201
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaApplication1", "AvaloniaApplication1.csproj", "{5FED69C4-112A-4089-8BE1-B78FC720750F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo", "Todo\Todo.csproj", "{F4DC32E6-176C-4737-A214-89A6767714BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5FED69C4-112A-4089-8BE1-B78FC720750F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5FED69C4-112A-4089-8BE1-B78FC720750F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5FED69C4-112A-4089-8BE1-B78FC720750F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5FED69C4-112A-4089-8BE1-B78FC720750F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4DC32E6-176C-4737-A214-89A6767714BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4DC32E6-176C-4737-A214-89A6767714BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4DC32E6-176C-4737-A214-89A6767714BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4DC32E6-176C-4737-A214-89A6767714BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
