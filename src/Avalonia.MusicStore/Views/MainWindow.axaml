@@ -1,0 +1,59 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Avalonia.MusicStore.ViewModels"
+        xmlns:local="using:Avalonia.MusicStore.Views"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        WindowStartupLocation="CenterScreen"
+        x:Class="Avalonia.MusicStore.Views.MainWindow"
+        Icon="/Assets/logo.png"
+        Title="Avalonia.MusicStore"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="True">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+
+    <Panel>
+        <ExperimentalAcrylicBorder IsHitTestVisible="False">
+            <ExperimentalAcrylicBorder.Material>
+                <ExperimentalAcrylicMaterial
+                    BackgroundSource="Digger"
+                    TintColor="Black"
+                    TintOpacity="1"
+                    MaterialOpacity="0.65">
+
+                </ExperimentalAcrylicMaterial>
+            </ExperimentalAcrylicBorder.Material>
+        </ExperimentalAcrylicBorder>
+
+        <Panel Margin="40">
+            <Button Command="{Binding BuyMusicCommand}" HorizontalAlignment="Right"
+                    VerticalAlignment="Top">
+                <PathIcon Data="{StaticResource StoreMicrosoftRegular}" />
+            </Button>
+
+            <TextBlock IsVisible="{Binding CollectionEmpty}" Text="这里很寂寞。 购买一些音乐以开始您的收藏。" HorizontalAlignment="Center"
+                       VerticalAlignment="Center">
+            </TextBlock>
+
+            <ItemsControl Margin="0 40 0 0" Items="{Binding Albums}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <local:AlbumView Margin="0 0 20 20"></local:AlbumView>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Panel>
+    </Panel>
+
+</Window>
