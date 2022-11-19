@@ -3,6 +3,8 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.MusicStore.ViewModels;
 using Avalonia.MusicStore.Views;
+using Avalonia.Platform;
+using GaxAvalonia.Assets.Base;
 
 namespace Avalonia.MusicStore
 {
@@ -24,6 +26,12 @@ namespace Avalonia.MusicStore
             }
 
             base.OnFrameworkInitializationCompleted();
+        }
+
+        public override void RegisterServices()
+        {
+            AvaloniaLocator.CurrentMutable.Bind<IFontManagerImpl>().ToConstant(new CustomFontManagerImpl());
+            base.RegisterServices();
         }
     }
 }
