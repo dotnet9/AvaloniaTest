@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/Solution Files/">
+    <File Path="CHANGELOG.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="publish.bat" />
+    <File Path="Publish.Common.pubxml" />
+    <File Path="publish_all.bat" />
+    <File Path="publish_music_win-x64.bat" />
+    <File Path="README.md" />
+    <File Path="SetPlatformMacro.ps1" />
+    <File Path="UpdateAssemblyVersion.ps1" />
+  </Folder>
+  <Project Path="src/Avalonia.MusicStore/Avalonia.MusicStore.csproj" />
+  <Project Path="src/Todo/Todo.csproj" />
+</Solution>

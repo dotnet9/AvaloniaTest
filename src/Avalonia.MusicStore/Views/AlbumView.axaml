@@ -2,18 +2,48 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Avalonia.MusicStore.Views.AlbumView">
-    <StackPanel Spacing="5" Width="200">
-        <Border CornerRadius="10" ClipToBounds="True">
-            <Panel Background="#7FFF22DD">
-                <Image Width="200" Stretch="Uniform" Source="{Binding Cover}"></Image>
-                <Panel Height="200" IsVisible="{Binding Cover,Converter={x:Static ObjectConverters.IsNull}}">
-                    <PathIcon Height="75" Width="75" Data="{StaticResource MusicRegular}"></PathIcon>
-                </Panel>
-            </Panel>
-        </Border>
-        <TextBlock Text="{Binding Title}" HorizontalAlignment="Center"></TextBlock>
-        <TextBlock Text="{Binding Artist}" HorizontalAlignment="Center"></TextBlock>
-    </StackPanel>
+             mc:Ignorable="d"
+             d:DesignWidth="240"
+             d:DesignHeight="340"
+             x:Class="Avalonia.MusicStore.Views.AlbumView"
+             x:CompileBindings="False">
+    <Border Width="240"
+            Padding="14"
+            CornerRadius="24"
+            Background="White"
+            BorderBrush="#E3E9F4"
+            BorderThickness="1">
+        <StackPanel Spacing="12">
+            <Border CornerRadius="18"
+                    ClipToBounds="True"
+                    Background="#14213D">
+                <Grid Width="212"
+                      Height="212">
+                    <Image Stretch="UniformToFill"
+                           Source="{Binding Cover}" />
+                    <Panel IsVisible="{Binding Cover, Converter={x:Static ObjectConverters.IsNull}}"
+                           Background="#1E2D4A">
+                        <PathIcon Width="72"
+                                  Height="72"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Data="{StaticResource MusicRegular}" />
+                    </Panel>
+                </Grid>
+            </Border>
+
+            <StackPanel Spacing="4">
+                <TextBlock Text="{Binding Title}"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="#14213D"
+                           TextTrimming="CharacterEllipsis"
+                           MaxLines="2" />
+                <TextBlock Text="{Binding Artist}"
+                           Foreground="#6A7895"
+                           TextTrimming="CharacterEllipsis"
+                           MaxLines="1" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
 </UserControl>

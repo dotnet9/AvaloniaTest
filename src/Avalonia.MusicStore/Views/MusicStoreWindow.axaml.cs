@@ -1,21 +1,37 @@
+using System;
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.MusicStore.ViewModels;
-using Avalonia.ReactiveUI;
-using ReactiveUI;
-using System;
 
 namespace Avalonia.MusicStore.Views;
 
-public partial class MusicStoreWindow : ReactiveWindow<MusicStoreViewModel>
+public partial class MusicStoreWindow : Window
 {
+    private MusicStoreViewModel? _viewModel;
+
     public MusicStoreWindow()
     {
         InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
+        DataContextChanged += OnDataContextChanged;
+    }
 
-        this.WhenActivated(d => d(ViewModel!.BuyMusicCommand.Subscribe(Close!)));
+    private void OnDataContextChanged(object? sender, EventArgs e)
+    {
+        if (_viewModel != null)
+        {
+            _viewModel.BuyRequested -= OnBuyRequested;
+        }
+
+        _viewModel = DataContext as MusicStoreViewModel;
+        if (_viewModel != null)
+        {
+            _viewModel.BuyRequested += OnBuyRequested;
+        }
+    }
+
+    private void OnBuyRequested(AlbumViewModel? album)
+    {
+        Close(album);
     }
 
     private void InitializeComponent()

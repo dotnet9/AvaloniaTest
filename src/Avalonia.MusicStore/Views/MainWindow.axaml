@@ -4,13 +4,20 @@
         xmlns:local="using:Avalonia.MusicStore.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d"
+        d:DesignWidth="1280"
+        d:DesignHeight="820"
         WindowStartupLocation="CenterScreen"
         x:Class="Avalonia.MusicStore.Views.MainWindow"
+        x:CompileBindings="False"
+        Width="1280"
+        Height="820"
+        MinWidth="1060"
+        MinHeight="700"
         Icon="/Assets/logo.png"
-        Title="Avalonia.MusicStore"
+        Title="Music Store 收藏馆"
         TransparencyLevelHint="AcrylicBlur"
-        Background="Transparent"
+        Background="#09111F"
         ExtendClientAreaToDecorationsHint="True">
 
     <Design.DataContext>
@@ -22,38 +29,109 @@
             <ExperimentalAcrylicBorder.Material>
                 <ExperimentalAcrylicMaterial
                     BackgroundSource="Digger"
-                    TintColor="Black"
-                    TintOpacity="1"
-                    MaterialOpacity="0.65">
-
-                </ExperimentalAcrylicMaterial>
+                    TintColor="#07101C"
+                    TintOpacity="0.88"
+                    MaterialOpacity="0.92" />
             </ExperimentalAcrylicBorder.Material>
         </ExperimentalAcrylicBorder>
 
-        <Panel Margin="40">
-            <Button Command="{Binding BuyMusicCommand}" HorizontalAlignment="Right"
-                    VerticalAlignment="Top">
-                <PathIcon Data="{StaticResource StoreMicrosoftRegular}" />
-            </Button>
+        <Grid Margin="36"
+              RowDefinitions="Auto,*"
+              RowSpacing="24">
+            <Border Padding="28"
+                    CornerRadius="30"
+                    Background="#16233B">
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="{Binding HeroTitle}"
+                                   FontSize="32"
+                                   FontWeight="Bold" />
+                        <TextBlock Text="{Binding HeroSubtitle}"
+                                   Foreground="#B7C4E1"
+                                   MaxWidth="680"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
 
-            <TextBlock IsVisible="{Binding CollectionEmpty}" Text="这里很寂寞。 购买一些音乐以开始您的收藏。" HorizontalAlignment="Center"
-                       VerticalAlignment="Center">
-            </TextBlock>
+                    <StackPanel Grid.Column="1"
+                                HorizontalAlignment="Right"
+                                Spacing="14">
+                        <Border Padding="14,8"
+                                HorizontalAlignment="Right"
+                                CornerRadius="999"
+                                Background="#223553">
+                            <TextBlock Text="{Binding AlbumCount, StringFormat=已收藏 {0} 张}"
+                                       Foreground="#A9CBFF"
+                                       FontWeight="SemiBold" />
+                        </Border>
 
-            <ItemsControl Margin="0 40 0 0" Items="{Binding Albums}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
+                        <Button Command="{Binding BuyMusicCommand}"
+                                MinWidth="170"
+                                Height="46"
+                                HorizontalAlignment="Right">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <PathIcon Data="{StaticResource StoreMicrosoftRegular}" />
+                                <TextBlock Text="前往商店" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
 
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <local:AlbumView Margin="0 0 20 20"></local:AlbumView>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </Panel>
+            <Border Grid.Row="1"
+                    Padding="24"
+                    CornerRadius="30"
+                    Background="#F5F7FB">
+                <Grid RowDefinitions="Auto,*">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="我的专辑墙"
+                                       Foreground="#14213D"
+                                       FontSize="24"
+                                       FontWeight="Bold" />
+                            <TextBlock Text="为喜欢的音乐保留一个整洁、可持续扩展的桌面收藏区。"
+                                       Foreground="#61708F" />
+                        </StackPanel>
+
+                        <Border Grid.Column="1"
+                                Padding="12,6"
+                                VerticalAlignment="Center"
+                                CornerRadius="999"
+                                Background="#E6ECF8">
+                            <TextBlock Text="{Binding AlbumCount, StringFormat=共 {0} 张专辑}"
+                                       Foreground="#30405F"
+                                       FontWeight="SemiBold" />
+                        </Border>
+                    </Grid>
+
+                    <Grid Grid.Row="1">
+                        <TextBlock IsVisible="{Binding CollectionEmpty}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   TextAlignment="Center"
+                                   FontSize="18"
+                                   Foreground="#6A7895"
+                                   Text="当前还没有收藏专辑&#x0a;点击右上角“前往商店”开始添加第一张。" />
+
+                        <ScrollViewer IsVisible="{Binding CollectionEmpty, Converter={x:Static BoolConverters.Not}}"
+                                      Margin="0,24,0,0"
+                                      VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding Albums}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <local:AlbumView Margin="0,0,18,18" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
     </Panel>
-
 </Window>

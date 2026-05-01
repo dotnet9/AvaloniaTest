@@ -2,10 +2,94 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d"
+        d:DesignWidth="460"
+        d:DesignHeight="760"
         x:Class="Todo.Views.MainWindow"
+        x:CompileBindings="False"
         Icon="/Assets/logo.png"
-        Width="200" Height="300"
-        Title="Avalonia Todo"
-        Content="{Binding Content}">
+        Width="460"
+        Height="760"
+        MinWidth="420"
+        MinHeight="700"
+        Title="Todo 专注清单"
+        Background="#0B1020">
+    <Grid RowDefinitions="Auto,*">
+        <Border Margin="24,24,24,16"
+                Padding="24"
+                CornerRadius="28"
+                Background="#1A2238">
+            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                <TextBlock Text="{Binding HeaderTitle}"
+                           FontSize="28"
+                           FontWeight="Bold" />
+                <Border Grid.Column="1"
+                        Padding="12,6"
+                        CornerRadius="999"
+                        Background="#2B3B63">
+                    <TextBlock Text="{Binding CompletedItems, StringFormat=已完成 {0} 项}"
+                               Foreground="#A9C4FF"
+                               FontWeight="SemiBold" />
+                </Border>
+
+                <TextBlock Grid.Row="1"
+                           Grid.ColumnSpan="2"
+                           Margin="0,10,0,0"
+                           Text="{Binding HeaderSubtitle}"
+                           Foreground="#B9C2DA"
+                           TextWrapping="Wrap" />
+
+                <Grid Grid.Row="2"
+                      Grid.ColumnSpan="2"
+                      Margin="0,20,0,0"
+                      ColumnDefinitions="*,*,*">
+                    <Border Margin="0,0,10,0"
+                            Padding="14"
+                            CornerRadius="20"
+                            Background="#121A2D">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="总事项" Foreground="#91A0C4" />
+                            <TextBlock Text="{Binding TotalItems}"
+                                       FontSize="24"
+                                       FontWeight="Bold" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="1"
+                            Margin="5,0"
+                            Padding="14"
+                            CornerRadius="20"
+                            Background="#121A2D">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="待处理" Foreground="#91A0C4" />
+                            <TextBlock Text="{Binding PendingItems}"
+                                       FontSize="24"
+                                       FontWeight="Bold" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="2"
+                            Margin="10,0,0,0"
+                            Padding="14"
+                            CornerRadius="20"
+                            Background="#121A2D">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="当前模式" Foreground="#91A0C4" />
+                            <TextBlock Text="{Binding CurrentModeLabel}"
+                                       FontWeight="SemiBold"
+                                       TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1"
+                Margin="24,0,24,24"
+                Padding="20"
+                CornerRadius="28"
+                Background="#F4F7FB">
+            <ContentControl Content="{Binding Content}" />
+        </Border>
+    </Grid>
 </Window>

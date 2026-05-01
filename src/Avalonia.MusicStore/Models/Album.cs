@@ -1,17 +1,16 @@
-﻿using iTunesSearch.Library;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Avalonia.MusicStore.Models;
 
-public class Album
+public partial class Album
 {
-    private static HttpClient _httpClient = new();
-    private static iTunesSearchManager _searchManager = new();
+    private static readonly HttpClient HttpClient = new();
 
     public Album(string artist, string title, string coverUrl)
     {
@@ -34,12 +33,9 @@ public class Album
         {
             return File.OpenRead(CachePath + ".bmp");
         }
-        else
-        {
-            var data = await _httpClient.GetByteArrayAsync(CoverUrl);
 
-            return new MemoryStream(data);
-        }
+        var data = await HttpClient.GetByteArrayAsync(CoverUrl);
+        return new MemoryStream(data);
     }
 
     public async Task SaveAsync()
@@ -60,12 +56,12 @@ public class Album
 
     private static async Task SaveToStreamAsync(Album data, Stream stream)
     {
-        await JsonSerializer.SerializeAsync(stream, data).ConfigureAwait(false);
+        await JsonSerializer.SerializeAsync(stream, data, AlbumJsonSerializerContext.Default.Album).ConfigureAwait(false);
     }
 
     public static async Task<Album> LoadFromStream(Stream stream)
     {
-        return (await JsonSerializer.DeserializeAsync<Album>(stream).ConfigureAwait(false))!;
+        return (await JsonSerializer.DeserializeAsync(stream, AlbumJsonSerializerContext.Default.Album).ConfigureAwait(false))!;
     }
 
     public static async Task<IEnumerable<Album>> LoadCachedAsync()
@@ -79,7 +75,10 @@ public class Album
 
         foreach (var file in Directory.EnumerateFiles("./Cache"))
         {
-            if (!string.IsNullOrWhiteSpace(new DirectoryInfo(file).Extension)) continue;
+            if (!string.IsNullOrWhiteSpace(new DirectoryInfo(file).Extension))
+            {
+                continue;
+            }
 
             await using var fs = File.OpenRead(file);
             results.Add(await LoadFromStream(fs).ConfigureAwait(false));
@@ -90,9 +89,41 @@ public class Album
 
     public static async Task<IEnumerable<Album>> SearchAsync(string searchTerm)
     {
-        var query = await _searchManager.GetAlbumsAsync(searchTerm).ConfigureAwait(false);
+        var requestUri = $"https://itunes.apple.com/search?term={System.Uri.EscapeDataString(searchTerm)}&entity=album";
+        await using var stream = await HttpClient.GetStreamAsync(requestUri).ConfigureAwait(false);
+        var query = await JsonSerializer.DeserializeAsync(stream, AlbumJsonSerializerContext.Default.ITunesSearchResponse).ConfigureAwait(false);
 
-        return query.Albums.Select(x =>
-            new Album(x.ArtistName, x.CollectionName, x.ArtworkUrl100.Replace("100x100bb", "600x600bb")));
+        return (query?.Results ?? [])
+            .Where(x => !string.IsNullOrWhiteSpace(x.ArtistName)
+                && !string.IsNullOrWhiteSpace(x.CollectionName)
+                && !string.IsNullOrWhiteSpace(x.ArtworkUrl100))
+            .Select(x => new Album(
+                x.ArtistName!,
+                x.CollectionName!,
+                x.ArtworkUrl100!.Replace("100x100bb", "600x600bb")));
+    }
+
+    private sealed class ITunesSearchResponse
+    {
+        [JsonPropertyName("results")]
+        public List<ITunesAlbumResult> Results { get; set; } = [];
+    }
+
+    private sealed class ITunesAlbumResult
+    {
+        [JsonPropertyName("artistName")]
+        public string? ArtistName { get; set; }
+
+        [JsonPropertyName("collectionName")]
+        public string? CollectionName { get; set; }
+
+        [JsonPropertyName("artworkUrl100")]
+        public string? ArtworkUrl100 { get; set; }
+    }
+
+    [JsonSerializable(typeof(Album))]
+    [JsonSerializable(typeof(ITunesSearchResponse))]
+    private sealed partial class AlbumJsonSerializerContext : JsonSerializerContext
+    {
     }
 }

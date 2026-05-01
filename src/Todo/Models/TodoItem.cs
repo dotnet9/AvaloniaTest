@@ -1,7 +1,27 @@
-﻿namespace Todo.Models;
+using ReactiveUI;
 
-public class TodoItem
+namespace Todo.Models;
+
+public class TodoItem : ReactiveObject
 {
-    public string Description { get; set; }
-    public bool IsChecked { get; set; }
+    private string _description = string.Empty;
+    private bool _isChecked;
+
+    public string Description
+    {
+        get => _description;
+        set => this.RaiseAndSetIfChanged(ref _description, value);
+    }
+
+    public bool IsChecked
+    {
+        get => _isChecked;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _isChecked, value);
+            this.RaisePropertyChanged(nameof(StatusText));
+        }
+    }
+
+    public string StatusText => IsChecked ? "已完成" : "待处理";
 }

@@ -2,13 +2,55 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="300"
-             x:Class="Todo.Views.AddItemView">
-    <DockPanel>
-        <Button DockPanel.Dock="Bottom" Command="{Binding Cancel}">Cancel</Button>
-        <Button DockPanel.Dock="Bottom" Command="{Binding Ok}">OK</Button>
-        <TextBox AcceptsReturn="False"
-                 Text="{Binding Description}"
-                 Watermark="Enter your TODO" />
-    </DockPanel>
+             mc:Ignorable="d"
+             d:DesignWidth="400"
+             d:DesignHeight="580"
+             x:Class="Todo.Views.AddItemView"
+             x:CompileBindings="False">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <StackPanel Spacing="6">
+            <TextBlock Text="添加新事项"
+                       Foreground="#16213D"
+                       FontSize="22"
+                       FontWeight="Bold" />
+            <TextBlock Text="写下一个清晰、具体的小任务，会更容易开始行动。"
+                       Foreground="#5E6A86"
+                       TextWrapping="Wrap" />
+        </StackPanel>
+
+        <Border Grid.Row="1"
+                Margin="0,20,0,20"
+                Padding="18"
+                CornerRadius="22"
+                Background="White"
+                BorderBrush="#E3E9F4"
+                BorderThickness="1">
+            <StackPanel Spacing="12">
+                <TextBlock Text="事项内容"
+                           Foreground="#33415F"
+                           FontWeight="SemiBold" />
+                <TextBox Text="{Binding Description}"
+                         MinHeight="120"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         VerticalContentAlignment="Top"
+                         PlaceholderText="例如：整理下周演示文稿，补完最后两页图表" />
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="2"
+              ColumnDefinitions="*,*"
+              ColumnSpacing="12">
+            <Button Grid.Column="0"
+                    Height="46"
+                    Command="{Binding Cancel}">
+                取消
+            </Button>
+            <Button Grid.Column="1"
+                    Height="46"
+                    Command="{Binding Ok}">
+                保存事项
+            </Button>
+        </Grid>
+    </Grid>
 </UserControl>

@@ -2,23 +2,105 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Avalonia.MusicStore.Views.MusicStoreView">
-    <DockPanel>
-        <StackPanel DockPanel.Dock="Top">
-            <TextBox Text="{Binding SearchText}" Watermark="查询专辑..."></TextBox>
-            <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsBusy}"></ProgressBar>
-        </StackPanel>
-        <Button Command="{Binding BuyMusicCommand}" Content="购买专辑" DockPanel.Dock="Bottom"
-                HorizontalAlignment="Center">
-        </Button>
-        <ListBox Items="{Binding SearchResults}" SelectedItem="{Binding SelectedAlbum}" Background="Transparent"
-                 Margin="0 20">
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel ></WrapPanel>
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-        </ListBox>
-    </DockPanel>
+             mc:Ignorable="d"
+             d:DesignWidth="980"
+             d:DesignHeight="620"
+             x:Class="Avalonia.MusicStore.Views.MusicStoreView"
+             x:CompileBindings="False">
+    <UserControl.Styles>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Margin" Value="0,0,18,18" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,Auto,*"
+          RowSpacing="18">
+        <Border Padding="24"
+                CornerRadius="28"
+                Background="#16233B">
+            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="发现新专辑"
+                               FontSize="28"
+                               FontWeight="Bold" />
+                    <TextBlock Text="搜索歌手、专辑名称或关键词，把你喜欢的音乐加入收藏。"
+                               Foreground="#B7C4E1"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+
+                <Border Grid.Column="1"
+                        Padding="12,6"
+                        VerticalAlignment="Top"
+                        CornerRadius="999"
+                        Background="#223553">
+                    <TextBlock Text="{Binding SearchResults.Count, StringFormat=结果 {0} 条}"
+                               Foreground="#A9CBFF"
+                               FontWeight="SemiBold" />
+                </Border>
+
+                <Grid Grid.Row="1"
+                      Grid.ColumnSpan="2"
+                      Margin="0,20,0,0"
+                      ColumnDefinitions="*,Auto"
+                      ColumnSpacing="14">
+                    <TextBox Text="{Binding SearchText}"
+                             Height="48"
+                             VerticalContentAlignment="Center"
+                             PlaceholderText="搜索专辑、歌手或乐队" />
+
+                    <Button Grid.Column="1"
+                            MinWidth="150"
+                            Height="48"
+                            Command="{Binding BuyMusicCommand}">
+                        购买所选专辑
+                    </Button>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1"
+                Padding="14,12"
+                CornerRadius="18"
+                Background="#0E1728">
+            <DockPanel>
+                <ProgressBar DockPanel.Dock="Right"
+                             Width="140"
+                             IsIndeterminate="True"
+                             IsVisible="{Binding IsBusy}" />
+                <TextBlock Text="{Binding SearchSummary}"
+                           Foreground="#C6D2EA"
+                           TextWrapping="Wrap" />
+            </DockPanel>
+        </Border>
+
+        <Border Grid.Row="2"
+                Padding="18"
+                CornerRadius="26"
+                Background="#F5F7FB">
+            <Grid>
+                <TextBlock IsVisible="{Binding HasResults, Converter={x:Static BoolConverters.Not}}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           TextAlignment="Center"
+                           Foreground="#6A7895"
+                           FontSize="18"
+                           Text="搜索结果会显示在这里&#x0a;先输入关键词，再从结果中挑选喜欢的专辑。" />
+
+                <ListBox IsVisible="{Binding HasResults}"
+                         ItemsSource="{Binding SearchResults}"
+                         SelectedItem="{Binding SelectedAlbum}"
+                         Background="Transparent"
+                         BorderThickness="0">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </ListBox>
+            </Grid>
+        </Border>
+    </Grid>
 </UserControl>

@@ -1,26 +1,38 @@
-using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.MusicStore.ViewModels;
-using Avalonia.ReactiveUI;
-using ReactiveUI;
+using System.Threading.Tasks;
 
 namespace Avalonia.MusicStore.Views;
 
-public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
+public partial class MainWindow : Window
 {
+    private bool _loaded;
+
     public MainWindow()
     {
         InitializeComponent();
-        this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
+        Opened += OnOpened;
     }
 
-    private async Task DoShowDialogAsync(InteractionContext<MusicStoreViewModel, AlbumViewModel?> interaction)
+    private async void OnOpened(object? sender, System.EventArgs e)
+    {
+        if (_loaded || DataContext is not MainWindowViewModel viewModel)
+        {
+            return;
+        }
+
+        _loaded = true;
+        viewModel.OpenStoreAsync = OpenStoreWindowAsync;
+        await viewModel.LoadAlbumsAsync();
+    }
+
+    private async Task<AlbumViewModel?> OpenStoreWindowAsync(MusicStoreViewModel storeViewModel)
     {
         var dialog = new MusicStoreWindow
         {
-            DataContext = interaction.Input
+            DataContext = storeViewModel
         };
 
-        var result = await dialog.ShowDialog<AlbumViewModel?>(this);
-        interaction.SetOutput(result);
+        return await dialog.ShowDialog<AlbumViewModel?>(this);
     }
 }

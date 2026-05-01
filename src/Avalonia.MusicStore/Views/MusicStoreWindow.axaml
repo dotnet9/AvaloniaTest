@@ -3,25 +3,35 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="using:Avalonia.MusicStore.Views"
-        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="550"
+        mc:Ignorable="d"
+        d:DesignWidth="1080"
+        d:DesignHeight="720"
+        Width="1080"
+        Height="720"
+        MinWidth="920"
+        MinHeight="620"
         WindowStartupLocation="CenterOwner"
         x:Class="Avalonia.MusicStore.Views.MusicStoreWindow"
-        Title="MusicStoreWindow"
+        Title="音乐商店"
         TransparencyLevelHint="AcrylicBlur"
-        ExtendClientAreaToDecorationsHint="True">
+        ExtendClientAreaToDecorationsHint="True"
+        Background="#09111F">
     <Panel>
         <ExperimentalAcrylicBorder IsHitTestVisible="False">
             <ExperimentalAcrylicBorder.Material>
                 <ExperimentalAcrylicMaterial
                     BackgroundSource="Digger"
-                    TintColor="Black"
-                    TintOpacity="1"
-                    MaterialOpacity="0.65" />
+                    TintColor="#07101C"
+                    TintOpacity="0.88"
+                    MaterialOpacity="0.92" />
             </ExperimentalAcrylicBorder.Material>
         </ExperimentalAcrylicBorder>
 
-        <Panel Margin="40">
-            <local:MusicStoreView></local:MusicStoreView>
-        </Panel>
+        <Border Margin="28"
+                Padding="28"
+                CornerRadius="32"
+                Background="#0E1728">
+            <local:MusicStoreView />
+        </Border>
     </Panel>
 </Window>

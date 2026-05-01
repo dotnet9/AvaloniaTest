@@ -1,11 +1,19 @@
-using ReactiveUI;
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Runtime.CompilerServices;
+using ReactiveUI;
 
-namespace Avalonia.MusicStore.ViewModels
+namespace Avalonia.MusicStore.ViewModels;
+
+public abstract class ViewModelBase : ReactiveObject
 {
-    public class ViewModelBase : ReactiveObject
+    protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {
+        if (EqualityComparer<T>.Default.Equals(field, value))
+        {
+            return false;
+        }
+
+        this.RaiseAndSetIfChanged(ref field, value, propertyName);
+        return true;
     }
 }

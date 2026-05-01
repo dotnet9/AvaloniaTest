@@ -1,8 +1,6 @@
-﻿using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using Avalonia.MusicStore.Models;
-using ReactiveUI;
 
 namespace Avalonia.MusicStore.ViewModels;
 
@@ -17,12 +15,13 @@ public class AlbumViewModel : ViewModelBase
     }
 
     public string Artist => _album.Artist;
+
     public string Title => _album.Title;
 
     public Bitmap? Cover
     {
         get => _cover;
-        private set => this.RaiseAndSetIfChanged(ref _cover, value);
+        private set => SetProperty(ref _cover, value);
     }
 
     public async Task LoadCover()

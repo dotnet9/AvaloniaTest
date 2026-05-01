@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading;
+using Avalonia.Threading;
 using Avalonia.MusicStore.Models;
 using ReactiveUI;
 
@@ -20,50 +21,72 @@ public class MusicStoreViewModel : ViewModelBase
     {
         this.WhenAnyValue(x => x.SearchText)
             .Throttle(TimeSpan.FromMilliseconds(400))
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(DoSearch!);
-        BuyMusicCommand = ReactiveCommand.Create(() => SelectedAlbum);
+            .Subscribe(searchText =>
+                Dispatcher.UIThread.Post(() => DoSearch(searchText ?? string.Empty)));
+
+        var canBuy = this.WhenAnyValue(x => x.SelectedAlbum)
+            .Select(selectedAlbum => selectedAlbum is not null);
+
+        BuyMusicCommand = ReactiveCommand.Create(
+            () => SelectedAlbum,
+            canBuy);
+
+        BuyMusicCommand.Subscribe(album => BuyRequested?.Invoke(album));
     }
+
+    public event Action<AlbumViewModel?>? BuyRequested;
 
     public string? SearchText
     {
         get => _searchText;
-        set => this.RaiseAndSetIfChanged(ref _searchText, value);
+        set => SetProperty(ref _searchText, value);
     }
 
     public bool IsBusy
     {
         get => _isBusy;
-        set => this.RaiseAndSetIfChanged(ref _isBusy, value);
+        private set => SetProperty(ref _isBusy, value);
     }
 
     public AlbumViewModel? SelectedAlbum
     {
         get => _selectedAlbum;
-        set => this.RaiseAndSetIfChanged(ref _selectedAlbum, value);
+        set => SetProperty(ref _selectedAlbum, value);
     }
 
-    public ObservableCollection<AlbumViewModel> SearchResults { get; } = new();
+    public ObservableCollection<AlbumViewModel> SearchResults { get; } = [];
 
     public ReactiveCommand<Unit, AlbumViewModel?> BuyMusicCommand { get; }
 
-    private async void DoSearch(string s)
+    public bool HasResults => SearchResults.Count > 0;
+
+    public string SearchSummary => string.IsNullOrWhiteSpace(SearchText)
+        ? "输入歌手名或专辑名开始搜索。"
+        : IsBusy
+            ? "正在检索在线专辑目录..."
+            : HasResults
+                ? $"共找到 {SearchResults.Count} 张专辑，可选择后加入收藏。"
+                : "没有找到匹配结果，试试换一个关键词。";
+
+    private async void DoSearch(string searchText)
     {
         IsBusy = true;
         SearchResults.Clear();
+        RefreshSearchState();
         _cancellationTokenSource?.Cancel();
         _cancellationTokenSource = new CancellationTokenSource();
         var cancellationToken = _cancellationTokenSource.Token;
 
-        if (!string.IsNullOrWhiteSpace(s))
+        if (!string.IsNullOrWhiteSpace(searchText))
         {
-            var albums = await Album.SearchAsync(s);
+            var albums = await Album.SearchAsync(searchText);
 
             foreach (var album in albums)
             {
-                var vm = new AlbumViewModel(album);
-                SearchResults.Add(vm);
+                SearchResults.Add(new AlbumViewModel(album));
             }
+
+            RefreshSearchState();
 
             if (!cancellationToken.IsCancellationRequested)
             {
@@ -72,6 +95,7 @@ public class MusicStoreViewModel : ViewModelBase
         }
 
         IsBusy = false;
+        RefreshSearchState();
     }
 
     private async void LoadCovers(CancellationToken cancellationToken)
@@ -79,10 +103,17 @@ public class MusicStoreViewModel : ViewModelBase
         foreach (var album in SearchResults.ToList())
         {
             await album.LoadCover();
+
             if (cancellationToken.IsCancellationRequested)
             {
                 return;
             }
         }
+    }
+
+    private void RefreshSearchState()
+    {
+        this.RaisePropertyChanged(nameof(HasResults));
+        this.RaisePropertyChanged(nameof(SearchSummary));
     }
 }
